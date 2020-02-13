@@ -1,24 +1,47 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-const Button = styled.button`
-  cursor: pointer;
-  margin: 0 1rem;
-  width: 10rem;
-`;
-
-const Tag = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  grid-area: asideRight;
-  justify-content: space-around;
-  margin-right: 1rem;
-  max-height: 50vh;
+const Wrapper = styled.div`
   position: sticky;
-  top: 1em;
-  & p {
+  grid-area: header;
+  /* display: flex;
+  justify-content: space-between; */
+  display: grid;
+  grid-template-columns: 25% 1fr 25%;
+  grid-template-areas:
+    "sort tags show";
+  margin: 1rem;
+
+  & button {
     cursor: pointer;
-    margin: 0 5px 0 0;
+    margin: auto 0;
+    height: 2rem;
+    position: relative;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+  }
+  & .sort {
+    grid-area: sort;
+  }
+  & .show {
+    grid-area: show;
+  }
+
+  & div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    grid-area: tags;
+    margin: 0 1rem;
+    & p {
+      cursor: pointer;
+      margin: 0 5px 0 0;
+      @media (max-width: 768px) {
+        display: none;
+      }
+    }
   }
 `;
 
@@ -29,10 +52,6 @@ const Main = styled.main`
   align-items: center;
   position: relative;
   width: 100%;
-  & .buttonHolder {
-    display: flex;
-    justify-content: center;
-  }
 `;
 
 const Grid = styled.div`
@@ -81,15 +100,17 @@ export default class App extends Component {
   updateRestList = () => {
     let data = require('./data/restaurants.json');
     // console.log(`this.state.defVal = ${ this.state.defVal }, this.state.restList.length = ${ this.state.restList.length }`);
-    let tags = data.restaurants.reduce( (arr, element) => {
-      return arr.concat(element.tags)
-    }, []).map( (element) => {
-      return `#${element}`
-    })
+    let tags = data.restaurants
+        .reduce( (arr, element) => {
+          return arr.concat(element.tags)
+        }, [])
+        .map( (element) => {
+          return `#${element}`
+        })
     this.setState( (prevState) => {
       return {
         defRestList: data.restaurants,
-        restList: data.restaurants.filter( (value, index) => {
+        restList: data.restaurants.filter( (index) => {
           return index < prevState.defVal;
         }),
         defVal: prevState.defVal + 10,
@@ -145,17 +166,17 @@ export default class App extends Component {
     });
     return (
       <>
-        <Button onClick = { this.sortHandler } style = {{ gridArea: 'asideLeft', height: '2rem', position: 'sticky', top: '1rem' }}>Sort</Button>
-        <Tag onClick = { this.filterHandler }>
-          { tagsList }
-        </Tag>
+        <Wrapper>
+          <button className = 'sort' onClick = { this.sortHandler }>Sort</button>
+          <div onClick = { this.filterHandler }>
+            { tagsList }
+          </div>
+          <button className = 'show' onClick = { this.showMoreHandler } disabled = { this.state.disabled }>Show more</button>
+        </Wrapper>
         <Main>
           <Grid>
             { restList }
           </Grid>
-          <div className = 'buttonHolder'>
-            <Button onClick = { this.showMoreHandler } disabled = { this.state.disabled }>Show more</Button>
-          </div>
         </Main>
       </>
     );
