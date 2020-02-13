@@ -75,12 +75,12 @@ export default class App extends Component {
     this.updateRestList();
     // console.log(`this.state.restList.length after setState = ${this.state.restList.length}`)
     // console.log(`this.state.defVal after setState = ${this.state.defVal}`)
-    console.log(`this.state.defVal after setState = ${ this.state.tagsList }`)
+    // console.log(`this.state.defVal after setState = ${ this.state.tagsList }`)
   }
 
   updateRestList = () => {
     let data = require('./data/restaurants.json');
-    console.log(`this.state.defVal = ${ this.state.defVal }, this.state.restList.length = ${ this.state.restList.length }`);
+    // console.log(`this.state.defVal = ${ this.state.defVal }, this.state.restList.length = ${ this.state.restList.length }`);
     let tags = data.restaurants.reduce( (arr, element) => {
       return arr.concat(element.tags)
     }, []).map( (element) => {
@@ -99,14 +99,14 @@ export default class App extends Component {
         })
       }
     })
-    console.log(this.state.restList)
-    console.log(this.state.defRestList)
+    // console.log(this.state.restList)
+    // console.log(this.state.defRestList)
 
   }
 
   showMoreHandler = () => {
     this.updateRestList();
-    console.log(`this.state.defVal after setState = ${ this.state.defVal }`)
+    // console.log(`this.state.defVal after setState = ${ this.state.defVal }`)
   }
 
   filterHandler = (element) => {
@@ -118,8 +118,8 @@ export default class App extends Component {
     })
   }
 
-  sortHandler = (element) => {
-    let newState = this.state.restList.sort( (a, b) => a.name > b.name ? 1 : -1);
+  sortHandler = () => {
+    let newState = this.state.restList.sort( (a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1);
     this.setState( () => {
       return {
         restList: newState
@@ -130,7 +130,7 @@ export default class App extends Component {
   render() {
     let restList = this.state.restList.map( (rests) => {
         return (
-          <div>
+          <div key = { rests.index }>
         {/*<article style = {{ backgroundImage: `url(${rests.image})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: '20vh' }} key = { rests.id }>*/}
             <img src = { rests.image} alt = { rests.description } />
             <p> { rests.name } </p>
@@ -140,7 +140,7 @@ export default class App extends Component {
     });
     let tagsList = this.state.tagsList.map( (tags) => {
         return (
-          <p id = { tags } >{ tags }</p>
+          <p key = { tags.index }>{ tags }</p>
         );
     });
     return (
